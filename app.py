@@ -9,18 +9,30 @@ def index():
 
 @app.route("/trigger", methods=["POST"])
 def trigger_pipeline():
-    data = {
-        "token": "glptt-07d692ddb0988fb55c45c232d0b5f498ba5de5ad",
-        "ref": "main",
-        "variables[INSTANCE_NAME]": request.form["instance_name"],
-        "variables[INSTANCE_OS]": request.form["instance_os"],
-        "variables[INSTANCE_SIZE]": request.form["instance_size"],
-        "variables[INSTANCE_ENV]": request.form["instance_env"],
+    github_token = "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"  # Remplace par ton GitHub token
+    owner = "cheikhdoss"
+    repo = "aws-automation"
+    workflow_file = "terraform.yml"
+    
+    url = f"https://api.github.com/repos/{owner}/{repo}/actions/workflows/{workflow_file}/dispatches"
+    
+    headers = {
+        "Accept": "application/vnd.github+json",
+        "Authorization": f"Bearer {github_token}",
+        "X-GitHub-Api-Version": "2022-11-28"
     }
-
-    project_id = "78064655"
-    url = f"https://gitlab.com/api/v4/projects/78064655/trigger/pipeline"
-    response = requests.post(url, data=data)
+    
+    data = {
+        "ref": "main",
+        "inputs": {
+            "instance_name": request.form["instance_name"],
+            "instance_os": request.form["instance_os"],
+            "instance_size": request.form["instance_size"],
+            "instance_env": request.form["instance_env"]
+        }
+    }
+    
+    response = requests.post(url, json=data, headers=headers)
 
     return f"Résultat: {response.status_code}<br>{response.text}"
 
