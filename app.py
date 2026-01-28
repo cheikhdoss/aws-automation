@@ -1,5 +1,6 @@
 from flask import Flask, request, render_template
 import requests
+import os
 
 app = Flask(__name__)
 
@@ -9,7 +10,7 @@ def index():
 
 @app.route("/trigger", methods=["POST"])
 def trigger_pipeline():
-    github_token = "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"  # Remplace par ton GitHub token
+    github_token = os.getenv("GITHUB_TOKEN")  # Token depuis variable d'environnement
     owner = "cheikhdoss"
     repo = "aws-automation"
     workflow_file = "terraform.yml"
