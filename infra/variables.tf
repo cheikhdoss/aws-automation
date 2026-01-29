@@ -1,5 +1,5 @@
 variable "region" {
-  default = "us-west-1"
+  default = "us-east-2"
 }
 
 variable "access_key" {
