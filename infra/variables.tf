@@ -14,11 +14,11 @@ variable "secret_access_key" {
 
 variable "ami" {
   type    = string
-  default = "ami-0290e60ec230db1e4"
+  default = "ami-04f34746e5e1ec0fe"
 }
 
 variable "instance_type" {
-  default = "t3.micro"
+  default = "t2.micro"
 }
 
 variable "instance_name" {
