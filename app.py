@@ -1,4 +1,5 @@
 from flask import Flask, request, render_template
+import base64
 import requests
 import os
 from dotenv import load_dotenv
@@ -26,19 +27,33 @@ def trigger_pipeline():
         "X-GitHub-Api-Version": "2022-11-28"
     }
     
+    uploaded_file = request.files.get("html_file")
+    if not uploaded_file or uploaded_file.filename.strip() == "":
+        return "❌ Erreur: fichier HTML manquant", 400
+
+    file_bytes = uploaded_file.read()
+    if not file_bytes:
+        return "❌ Erreur: fichier HTML vide", 400
+
+    html_base64 = base64.b64encode(file_bytes).decode("utf-8")
+    bucket_name = request.form["bucket_name"]
+
     data = {
         "ref": "main",
         "inputs": {
-            "instance_name": request.form["instance_name"],
-            "instance_os": request.form["instance_os"],
-            "instance_size": request.form["instance_size"],
-            "instance_env": request.form["instance_env"]
+            "bucket_name": bucket_name,
+            "html_object_key": "index.html",
+            "html_base64": html_base64
         }
     }
     
     response = requests.post(url, json=data, headers=headers)
 
-    return f"Résultat: {response.status_code}<br>{response.text}"
+    # GitHub renvoie 204 (No Content) quand le workflow est déclenché avec succès
+    if response.status_code == 204:
+        return "reponse : 204 ", 201
+    else:
+        return f"❌ Erreur: {response.status_code}<br>{response.text}", response.status_code
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -12,23 +12,15 @@ variable "secret_access_key" {
   sensitive = true
 }
 
-variable "ami" {
+variable "bucket_name" {
+  type = string
+}
+
+variable "html_object_key" {
   type    = string
-  default = "ami-038bba9a164eb3dc1"  # Ubuntu 22.04 LTS for us-west-1
+  default = "index.html"
 }
 
-variable "instance_type" {
-  default = "t2.micro"
-}
-
-variable "instance_name" {
-  default = "neosoft-cheikh"
-}
-
-variable "instance_size" {
-  default = "t2.micro"
-}
-
-variable "instance_env" {
-  default = "Dev"
+variable "html_file_path" {
+  type = string
 }

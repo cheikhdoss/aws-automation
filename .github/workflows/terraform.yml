@@ -3,31 +3,26 @@ name: Terraform AWS Automation
 on:
   workflow_dispatch:
     inputs:
-      instance_name:
-        description: 'Instance Name'
+      bucket_name:
+        description: 'Bucket Name'
         required: true
         type: string
-      instance_os:
-        description: 'Instance OS (AMI)'
+      html_object_key:
+        description: 'HTML Object Key'
         required: true
         type: string
-      instance_size:
-        description: 'Instance Size'
-        required: true
-        type: string
-      instance_env:
-        description: 'Environment'
+      html_base64:
+        description: 'HTML File Content (base64)'
         required: true
         type: string
 
 env:
   AWS_REGION: us-west-1
-  TF_VAR_instance_name: ${{ github.event.inputs.instance_name }}
-  TF_VAR_ami: ${{ github.event.inputs.instance_os }}
-  TF_VAR_instance_type: ${{ github.event.inputs.instance_size }}
-  TF_VAR_instance_env: ${{ github.event.inputs.instance_env }}
+  TF_VAR_bucket_name: ${{ github.event.inputs.bucket_name }}
+  TF_VAR_html_object_key: ${{ github.event.inputs.html_object_key }}
   TF_VAR_access_key: ${{ secrets.AWS_ACCESS_KEY }}
   TF_VAR_secret_access_key: ${{ secrets.AWS_SECRET_KEY }}
+  HTML_BASE64: ${{ github.event.inputs.html_base64 }}
 
 jobs:
   terraform:
@@ -35,6 +30,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
+      - name: Rebuild HTML file from base64
+        run: |
+          mkdir -p /tmp/html-upload
+          echo "$HTML_BASE64" | base64 -d > /tmp/html-upload/index.html
+          echo "TF_VAR_html_file_path=/tmp/html-upload/index.html" >> $GITHUB_ENV
       
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2

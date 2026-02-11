@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Créer une Instance EC2</title>
+    <title>Créer un bucket S3 public</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -55,33 +55,16 @@
 </head>
 <body>
     <div class="container">
-        <h2>PROJET IAC SONATEL: CRÉATION D'UNE INSTANCE EC2</h2>
-        <form method="post" action="/trigger">
+        <h2>PROJET IAC SONATEL: CRÉATION D'UN BUCKET S3 PUBLIC</h2>
+        <form method="post" action="/trigger" enctype="multipart/form-data">
 
-            <label for="instance_name">Nom de l'instance :</label>
-            <input id="instance_name" name="instance_name" placeholder="Nom instance" required>
+            <label for="bucket_name">Nom du bucket :</label>
+            <input id="bucket_name" name="bucket_name" placeholder="ex: mon-bucket-public" required>
 
-            <label for="ami_id">Choisir une image (AMI) :</label>
-            <select id="instance_os" name="instance_os" required>
-                <option value="ami-038bba9a164eb3dc1">Ubuntu 22.04 LTS (us-west-1)</option>
-                <option value="ami-0d5ae304a0b933620">Amazon Linux 2023 (us-west-1)</option>
-            </select>
+            <label for="html_file">Fichier HTML (sera publié comme index.html) :</label>
+            <input id="html_file" name="html_file" type="file" accept=".html,text/html" required>
 
-            <label for="instance_type">Type d’instance :</label>
-            <select id="instance_size" name="instance_size">
-                <option value="t3.micro">t3.micro</option>
-                <option value="t3.small">t3.small</option>
-                <option value="t3.medium">t3.medium</option>
-            </select>
-
-            <label for="instance_env">Environnement :</label>
-            <select id="instance_env" name="instance_env" required>
-                <option value="dev">Développement</option>
-                <option value="preprod">Préproduction</option>
-                <option value="prod">Production</option>
-            </select>
-
-            <button type="submit">Lancer l’instance</button>
+            <button type="submit">Créer le bucket et publier</button>
         </form>
     </div>
 </body>
