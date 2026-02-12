@@ -48,9 +48,22 @@ jobs:
       
       - name: Deploy Lambda function
         run: |
-          aws lambda update-function-code \
-            --function-name stop-ec2 \
-            --zip-file fileb://function.zip
+          # Vérifier si la fonction existe, sinon la créer
+          if aws lambda get-function --function-name stop-ec2 2>/dev/null; then
+            echo "Function exists, updating code..."
+            aws lambda update-function-code \
+              --function-name stop-ec2 \
+              --zip-file fileb://function.zip
+          else
+            echo "Function does not exist, creating..."
+            aws lambda create-function \
+              --function-name stop-ec2 \
+              --runtime python3.9 \
+              --role arn:aws:iam::$(aws sts get-caller-identity --query Account --output text):role/lambda-execution-role \
+              --handler lambda_function.lambda_handler \
+              --zip-file fileb://function.zip \
+              --description "Function to stop EC2 instances"
+          fi
 
   upload:
     runs-on: ubuntu-latest
