@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Créer un bucket S3 public</title>
+    <title>Pipeline AWS CI/CD</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -55,16 +55,18 @@
 </head>
 <body>
     <div class="container">
-        <h2>PROJET IAC SONATEL: CRÉATION D'UN BUCKET S3 PUBLIC</h2>
-        <form method="post" action="/trigger" enctype="multipart/form-data">
+        <h2>PIPELINE AWS CI/CD</h2>
+        <p>Ce pipeline va exécuter :</p>
+        <ul>
+            <li>✅ Validation des credentials AWS</li>
+            <li>🚀 Déploiement de la fonction Lambda stop-ec2</li>
+            <li>📂 Upload du script EC2 vers S3</li>
+        </ul>
+        <form method="post" action="/trigger">
+            <label for="bucket_name">Nom du bucket S3 :</label>
+            <input id="bucket_name" name="bucket_name" value="m2-cloud-logs--name" required>
 
-            <label for="bucket_name">Nom du bucket :</label>
-            <input id="bucket_name" name="bucket_name" placeholder="ex: mon-bucket-public" required>
-
-            <label for="html_file">Fichier HTML (sera publié comme index.html) :</label>
-            <input id="html_file" name="html_file" type="file" accept=".html,text/html" required>
-
-            <button type="submit">Créer le bucket et publier</button>
+            <button type="submit">Déclencher le Pipeline</button>
         </form>
     </div>
 </body>

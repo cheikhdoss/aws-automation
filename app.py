@@ -1,10 +1,9 @@
 from flask import Flask, request, render_template
-import base64
 import requests
 import os
 from dotenv import load_dotenv
 
-load_dotenv()  # Charge les variables du fichier .env
+load_dotenv()
 
 app = Flask(__name__)
 
@@ -14,7 +13,7 @@ def index():
 
 @app.route("/trigger", methods=["POST"])
 def trigger_pipeline():
-    github_token = os.getenv("GITHUB_TOKEN")  # Token depuis variable d'environnement
+    github_token = os.getenv("GITHUB_TOKEN")
     owner = "cheikhdoss"
     repo = "aws-automation"
     workflow_file = "terraform.yml"
@@ -27,31 +26,19 @@ def trigger_pipeline():
         "X-GitHub-Api-Version": "2022-11-28"
     }
     
-    uploaded_file = request.files.get("html_file")
-    if not uploaded_file or uploaded_file.filename.strip() == "":
-        return "❌ Erreur: fichier HTML manquant", 400
-
-    file_bytes = uploaded_file.read()
-    if not file_bytes:
-        return "❌ Erreur: fichier HTML vide", 400
-
-    html_base64 = base64.b64encode(file_bytes).decode("utf-8")
-    bucket_name = request.form["bucket_name"]
+    bucket_name = request.form.get("bucket_name", "m2-cloud-logs--name")
 
     data = {
         "ref": "main",
         "inputs": {
-            "bucket_name": bucket_name,
-            "html_object_key": "index.html",
-            "html_base64": html_base64
+            "bucket_name": bucket_name
         }
     }
     
     response = requests.post(url, json=data, headers=headers)
 
-    # GitHub renvoie 204 (No Content) quand le workflow est déclenché avec succès
     if response.status_code == 204:
-        return "reponse : 204 ", 201
+        return "✅ Pipeline AWS déclenché avec succès !", 200
     else:
         return f"❌ Erreur: {response.status_code}<br>{response.text}", response.status_code
 
